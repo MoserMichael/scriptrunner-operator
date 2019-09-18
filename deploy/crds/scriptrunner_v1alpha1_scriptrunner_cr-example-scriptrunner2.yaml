@@ -1,0 +1,18 @@
+apiVersion: scriptrunner.github.com/v1alpha1
+kind: ScriptRunner
+metadata:
+  name: example-scriptrunner2
+spec:
+    historySize: 5
+    initialWait: 2
+    nodeLabelSelector: ""
+    numRepetitions: 5
+    packagesToInstall: ""
+    pipToInstall: ""
+    runPeriod: 1 
+    podType: "elevated"
+    pythonScript: 
+        - "print('hello operator')"
+status:
+    CommandStatus: nil
+

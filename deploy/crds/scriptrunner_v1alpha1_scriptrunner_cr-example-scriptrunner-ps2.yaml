@@ -1,0 +1,47 @@
+apiVersion: scriptrunner.github.com/v1alpha1
+kind: ScriptRunner
+metadata:
+  name: example-scriptrunner-ps2
+spec:
+    historySize: 1
+    initialWait: 0
+    nodeLabelSelector: ""
+    numRepetitions: 1
+    packagesToInstall: ""
+    pipToInstall: ""
+    runPeriod: 0
+    podType: "elevatedWithFS"
+    pythonScript: 
+        - "import glob"
+        - "import os"
+        - "import pwd"
+        - "import grp"
+        - "import grp"
+        - "import grp"
+        - "root='/host/proc'"
+        - "rootLen=len(root)"
+        - "procDirs=glob.glob(root + '/[0-9]*')"
+        - "for f in procDirs:"
+        - "   pid=f[rootLen+1:]"
+        - "   statinfo = os.stat(root + '/' + pid)"
+        - "   uid=statinfo.st_uid"
+        - "   gid=statinfo.st_gid"
+        - "   uname=pwd.getpwuid(uid)[0]"
+        - "   gname=grp.getgrgid(gid)[0]"
+        - "   exenamelink = root + '/' + pid + '/exe'"
+        - "   getFromCmdLine = False"
+        - "   try:"
+        - "       path = os.readlink( exenamelink )"
+        - "   except:"
+        - "       getFromCmdLine = True"
+        - "   if getFromCmdLine:"
+        - "       cmdLine = root + '/' + pid + '/cmdline'"
+        - "       f = open(cmdLine)"
+        - "       cmdLineData = f.read()"
+        - "       path = cmdLineData.partition('\\0')[0]"
+        - "   if path == '':"
+        - "       path = '<unknown>'"
+        - "   print(pid, uname + ':' + gname, path)"
+status:
+    CommandStatus: nil
+        
