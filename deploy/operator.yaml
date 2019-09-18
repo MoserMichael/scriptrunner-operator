@@ -16,10 +16,10 @@ spec:
       containers:
         - name: scriptrunner-operator
           # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: scriptrunner:latest
           command:
           - scriptrunner-operator
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           env:
             - name: WATCH_NAMESPACE
               valueFrom:
