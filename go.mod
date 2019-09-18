@@ -14,6 +14,7 @@ require (
 
 // Pinned to kubernetes-1.13.4
 replace (
+	git.apache.org/thrift.git => github.com/apache/thrift v0.12.0
 	k8s.io/api => k8s.io/api v0.0.0-20190222213804-5cb15d344471
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20190228180357-d002e88f6236
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190221213512-86fb29eff628
