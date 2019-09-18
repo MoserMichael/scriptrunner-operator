@@ -1,0 +1,7 @@
+apiVersion: scriptrunner.github.com/v1alpha1
+kind: ScriptRunner
+metadata:
+  name: example-scriptrunner
+spec:
+  # Add fields here
+  size: 3
