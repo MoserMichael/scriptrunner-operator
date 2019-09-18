@@ -28,8 +28,119 @@ spec:
         metadata:
           type: object
         spec:
+          properties:
+            historySize:
+              description: HistorySize number of entries in command history
+              format: int32
+              type: integer
+            initialWait:
+              description: InitialWait if not zero then the number of milliseconds
+                to wait before first run
+              format: int32
+              type: integer
+            nodeLabelSelector:
+              description: Selector selects the set of nodes that this pod is run
+                on (empty string - all nodes)
+              type: string
+            numRepetitions:
+              description: NumRepetitions how many times the script is run (-1 means
+                infinite loop) The pod is stopped on last invocation (if not -1)
+              format: int32
+              type: integer
+            packagesToInstall:
+              description: 'PackagesToInstall if string not empty: prior to running
+                the script it will install the following distro packages on the docker
+                image'
+              type: string
+            pipToInstall:
+              description: 'PipToInstall if string not empty: prior to running the
+                script it will install the following pip packages on the docker image'
+              type: string
+            podType:
+              description: PodType selects the type of pod to run ("normal" "elevated"
+                "elevatedWitFS")
+              type: string
+            pythonScript:
+              description: PythonScript is the script to run on the node
+              items:
+                type: string
+              type: array
+            runPeriod:
+              description: RunPeriod specifies the interval between invocations of
+                the script (in milliseconds)
+              format: int32
+              type: integer
+          required:
+          - pythonScript
+          - packagesToInstall
+          - pipToInstall
+          - initialWait
+          - runPeriod
+          - numRepetitions
+          - historySize
+          - nodeLabelSelector
+          - podType
           type: object
         status:
+          properties:
+            commandStatus:
+              additionalProperties:
+                properties:
+                  cmdRunHistory:
+                    description: CmdRunHistory a history of command invocations
+                    items:
+                      properties:
+                        commandStatus:
+                          description: CommandStatus the exit status of running the
+                            script command
+                          format: int64
+                          type: integer
+                        commandStdErr:
+                          description: CommandStdErr the standard error of the command
+                          type: string
+                        commandStdOut:
+                          description: CommandStdOut the standard output of the command
+                          type: string
+                        serialNo:
+                          description: SerialNo serial  number of command invocation;
+                            incremented by one with each invocation
+                          format: int64
+                          type: integer
+                        timeEnd:
+                          description: TimeStart time when command was started
+                          type: string
+                        timeStart:
+                          description: TimeStart time when command was started
+                          type: string
+                      required:
+                      - serialNo
+                      - commandStatus
+                      - commandStdOut
+                      - commandStdErr
+                      - timeStart
+                      - timeEnd
+                      type: object
+                    minItems: 0
+                    type: array
+                  podInstanceName:
+                    description: PodInstanceName
+                    type: string
+                required:
+                - podInstanceName
+                type: object
+              description: CommandNodes the result of the script infocations that
+                ran on a particular node
+              type: object
+            instanceName:
+              description: InstanceName the internal name of the node (assigned by
+                operator)
+              type: string
+            statusDescription:
+              description: StatusDescription a description of the status
+              type: string
+          required:
+          - statusDescription
+          - instanceName
           type: object
   version: v1alpha1
   versions:

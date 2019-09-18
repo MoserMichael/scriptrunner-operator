@@ -11,9 +11,102 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunner":       schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunner(ref),
-		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunnerSpec":   schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerSpec(ref),
-		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunnerStatus": schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerStatus(ref),
+		"./pkg/apis/scriptrunner/v1alpha1.CommandRunnerStatus": schema_pkg_apis_scriptrunner_v1alpha1_CommandRunnerStatus(ref),
+		"./pkg/apis/scriptrunner/v1alpha1.CommandStatus":       schema_pkg_apis_scriptrunner_v1alpha1_CommandStatus(ref),
+		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunner":        schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunner(ref),
+		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunnerSpec":    schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerSpec(ref),
+		"./pkg/apis/scriptrunner/v1alpha1.ScriptRunnerStatus":  schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerStatus(ref),
+	}
+}
+
+func schema_pkg_apis_scriptrunner_v1alpha1_CommandRunnerStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "CommandStatus defines the observed state of CommandStatus",
+				Properties: map[string]spec.Schema{
+					"podInstanceName": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PodInstanceName",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"cmdRunHistory": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CmdRunHistory a history of command invocations",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("./pkg/apis/scriptrunner/v1alpha1.CommandStatus"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"podInstanceName"},
+			},
+		},
+		Dependencies: []string{
+			"./pkg/apis/scriptrunner/v1alpha1.CommandStatus"},
+	}
+}
+
+func schema_pkg_apis_scriptrunner_v1alpha1_CommandStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "CommandStatus defines the observed state of CommandStatus",
+				Properties: map[string]spec.Schema{
+					"serialNo": {
+						SchemaProps: spec.SchemaProps{
+							Description: "SerialNo serial  number of command invocation; incremented by one with each invocation",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"commandStatus": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CommandStatus the exit status of running the script command",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"commandStdOut": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CommandStdOut the standard output of the command",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"commandStdErr": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CommandStdErr the standard error of the command",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"timeStart": {
+						SchemaProps: spec.SchemaProps{
+							Description: "TimeStart time when command was started",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"timeEnd": {
+						SchemaProps: spec.SchemaProps{
+							Description: "TimeStart time when command was started",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"serialNo", "commandStatus", "commandStdOut", "commandStdErr", "timeStart", "timeEnd"},
+			},
+		},
+		Dependencies: []string{},
 	}
 }
 
@@ -65,7 +158,79 @@ func schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerSpec(ref common.Reference
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
 				Description: "ScriptRunnerSpec defines the desired state of ScriptRunner",
-				Properties:  map[string]spec.Schema{},
+				Properties: map[string]spec.Schema{
+					"pythonScript": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PythonScript is the script to run on the node",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type:   []string{"string"},
+										Format: "",
+									},
+								},
+							},
+						},
+					},
+					"packagesToInstall": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PackagesToInstall if string not empty: prior to running the script it will install the following distro packages on the docker image",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"pipToInstall": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PipToInstall if string not empty: prior to running the script it will install the following pip packages on the docker image",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"initialWait": {
+						SchemaProps: spec.SchemaProps{
+							Description: "InitialWait if not zero then the number of milliseconds to wait before first run",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"runPeriod": {
+						SchemaProps: spec.SchemaProps{
+							Description: "RunPeriod specifies the interval between invocations of the script (in milliseconds)",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"numRepetitions": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NumRepetitions how many times the script is run (-1 means infinite loop) The pod is stopped on last invocation (if not -1)",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"historySize": {
+						SchemaProps: spec.SchemaProps{
+							Description: "HistorySize number of entries in command history",
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+					"nodeLabelSelector": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Selector selects the set of nodes that this pod is run on (empty string - all nodes)",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"podType": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PodType selects the type of pod to run (\"normal\" \"elevated\" \"elevatedWitFS\")",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"pythonScript", "packagesToInstall", "pipToInstall", "initialWait", "runPeriod", "numRepetitions", "historySize", "nodeLabelSelector", "podType"},
 			},
 		},
 		Dependencies: []string{},
@@ -77,9 +242,39 @@ func schema_pkg_apis_scriptrunner_v1alpha1_ScriptRunnerStatus(ref common.Referen
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
 				Description: "ScriptRunnerStatus defines the observed state of ScriptRunner",
-				Properties:  map[string]spec.Schema{},
+				Properties: map[string]spec.Schema{
+					"statusDescription": {
+						SchemaProps: spec.SchemaProps{
+							Description: "StatusDescription a description of the status",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"instanceName": {
+						SchemaProps: spec.SchemaProps{
+							Description: "InstanceName the internal name of the node (assigned by operator)",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"commandStatus": {
+						SchemaProps: spec.SchemaProps{
+							Description: "CommandNodes the result of the script infocations that ran on a particular node",
+							Type:        []string{"object"},
+							AdditionalProperties: &spec.SchemaOrBool{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("./pkg/apis/scriptrunner/v1alpha1.CommandRunnerStatus"),
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"statusDescription", "instanceName"},
 			},
 		},
-		Dependencies: []string{},
+		Dependencies: []string{
+			"./pkg/apis/scriptrunner/v1alpha1.CommandRunnerStatus"},
 	}
 }
