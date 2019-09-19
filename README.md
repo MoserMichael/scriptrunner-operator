@@ -15,6 +15,8 @@ The Spec part of the ScriptRunner object defines the following:
 
 For each invocation of the script on a node you will get a entry in the status of the CRD object; the entry will list the result of the script invocation per node.
 
+Here are some notes i took while learning about [k8s operators](https://github.com/MoserMichael/cstuff/releases/download/k8sop/kubernetes-operators.pdf)
+
 The code
 ========
 
